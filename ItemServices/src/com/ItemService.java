@@ -35,9 +35,10 @@ public class ItemService
   @FormParam("Color") String Color,
   @FormParam("Size") String Size,
   @FormParam("Meterial") String Meterial,
-  @FormParam("ItemLocation") String ItemLocation) 
+  @FormParam("ItemLocation") String ItemLocation,
+  @FormParam("itemQuntity") String itemQuntity) 
  { 
-  String output = itemObj.insertItem(itemCode, itemName,itemType,itemCatogory, itemPrice, itemDesc,Brand,Color,Size,Meterial,ItemLocation); 
+  String output = itemObj.insertItem(itemCode, itemName,itemType,itemCatogory, itemPrice, itemDesc,Brand,Color,Size,Meterial,ItemLocation,itemQuntity); 
  return output; 
  }
  
@@ -62,7 +63,8 @@ public class ItemService
   String Size = itemObject.get("Size").getAsString(); 
   String Meterial = itemObject.get("Meterial").getAsString(); 
   String ItemLocation = itemObject.get("ItemLocation").getAsString(); 
-  String output = itemObj.updateItem(itemID, itemCode, itemName,itemType,itemCatogory, itemPrice, itemDesc,Brand,Color,Size,Meterial,ItemLocation); 
+  String itemQuntity = itemObject.get("itemQuntity").getAsString(); 
+  String output = itemObj.updateItem(itemID, itemCode, itemName,itemType,itemCatogory, itemPrice, itemDesc,Brand,Color,Size,Meterial,ItemLocation,itemQuntity); 
  return output; 
  }
 

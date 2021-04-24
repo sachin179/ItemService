@@ -16,18 +16,52 @@ private Connection connect()
  {e.printStackTrace();} 
  return con; 
  } 
-public String insertItem(String code, String name,String type,String catogory, String price, String desc, String brand, String color, String size, String meterial, String location) 
+public String insertItem(String code, String name,String type,String catogory, String price, String desc, String brand, String color, String size, String meterial, String location, String quntity) 
  { 
  String output = ""; 
+ 
+
+ 
+ if(code.isEmpty()|| name.isEmpty()||type.isEmpty()|| catogory.isEmpty()|| price.isEmpty()|| desc.isEmpty()|| brand.isEmpty()|| color.isEmpty()|| size.isEmpty()|| meterial.isEmpty() ||  location.isEmpty() ||  quntity.isEmpty()) {
+	 
+	output ="Cannot Empty"; 
+ }
+ 
+else if (!code.matches("[0-9]+")) {
+	 
+	 output=" invalid format! pleace enter code for numbers only ";
+ }
+ 
+else if (price.length() < 3) {
+	 
+	 output=" price should be greater than 99! ";
+}
+
+ 
+ 
+ else if (desc.length()<10) {
+	 
+	 output="description should greater than 10 ";
+ }
+else if (!quntity.matches("[0-9]+")) {
+	 
+	 output=" invalid format! pleace enter Quntity for numbers only ";
+ }
+ 
+
+ 
+ else {
+ 
  try
  { 
  Connection con = connect(); 
  if (con == null) 
  {return "Error while connecting to the database for inserting."; } 
  // create a prepared statement
- String query = " insert into items (`itemID`,`itemCode`,`itemName`,`itemType`,`itemCatogory`,`itemPrice`,`itemDesc`,`Brand`,`Color`,`Size`,`Meterial`,`ItemLocation`)"+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?)"; 
+ String query = " insert into items (`itemID`,`itemCode`,`itemName`,`itemType`,`itemCatogory`,`itemPrice`,`itemDesc`,`Brand`,`Color`,`Size`,`Meterial`,`ItemLocation`,`itemQuntity`)"+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?)"; 
  PreparedStatement preparedStmt = con.prepareStatement(query); 
  // binding values
+ 
  preparedStmt.setInt(1, 0); 
  preparedStmt.setString(2, code); 
  preparedStmt.setString(3, name); 
@@ -40,18 +74,24 @@ public String insertItem(String code, String name,String type,String catogory, S
  preparedStmt.setString(10, size); 
  preparedStmt.setString(11, meterial); 
  preparedStmt.setString(12, location); 
+ preparedStmt.setString(13, quntity);  
 // execute the statement
  preparedStmt.execute(); 
  con.close(); 
  output = "Inserted successfully"; 
  } 
+ 
+ 
+ 
  catch (Exception e) 
  { 
  output = "Error while inserting the item."; 
  System.err.println(e.getMessage()); 
- } 
+ } }
  return output; 
- } 
+ 
+ 
+ }
 public String readItems() 
  { 
  String output = ""; 
@@ -70,7 +110,8 @@ public String readItems()
  +"<th>Color</th>"
  +"<th>Size</th>"
  +"<th>Meterial</th>"
- +"<th>Location</th>"; 
+ +"<th>Location</th>"
+ +"<th>Quntity</th>"; 
  
  String query = "select * from items"; 
  Statement stmt = con.createStatement(); 
@@ -90,6 +131,7 @@ public String readItems()
  String Size = rs.getString("Size"); 
  String Meterial = rs.getString("Meterial"); 
  String ItemLocation = rs.getString("ItemLocation"); 
+ String itemQuntity = rs.getString("itemQuntity"); 
  // Add into the html table
  output += "<tr><td>" + itemCode + "</td>"; 
  output += "<td>" + itemName + "</td>"; 
@@ -102,6 +144,7 @@ public String readItems()
  output += "<td>" + Size + "</td>"; 
  output += "<td>" + Meterial + "</td>"; 
  output += "<td>" + ItemLocation + "</td>"; 
+ output += "<td>" + itemQuntity + "</td>"; 
  // buttons
   
  } 
@@ -116,7 +159,7 @@ public String readItems()
  } 
  return output; 
  } 
-public String updateItem(String ID, String code, String name, String type, String catogory, String price, String desc, String brand, String color, String size, String meterial, String location)
+public String updateItem(String ID, String code, String name, String type, String catogory, String price, String desc, String brand, String color, String size, String meterial, String location, String quntity)
 { 
 	 String output = ""; 
 	 try
@@ -125,7 +168,7 @@ public String updateItem(String ID, String code, String name, String type, Strin
 	 if (con == null) 
 	 {return "Error while connecting to the database for updating."; } 
 	 // create a prepared statement
-	 String query = "UPDATE items SET itemCode=?,itemName=?,itemType=?,itemCatogory=?,itemPrice=?,itemDesc=?,Brand=?,Color=?,Size=?,Meterial=?,ItemLocation=? WHERE itemID=?"; 
+	 String query = "UPDATE items SET itemCode=?,itemName=?,itemType=?,itemCatogory=?,itemPrice=?,itemDesc=?,Brand=?,Color=?,Size=?,Meterial=?,ItemLocation=?,itemQuntity=? WHERE itemID=?"; 
 	 PreparedStatement preparedStmt = con.prepareStatement(query); 
 	 // binding values
 	 preparedStmt.setString(1, code); 
@@ -139,11 +182,12 @@ public String updateItem(String ID, String code, String name, String type, Strin
 	 preparedStmt.setString(9, size); 
 	 preparedStmt.setString(10, meterial); 
 	 preparedStmt.setString(11, location); 
-	 preparedStmt.setInt(12, Integer.parseInt(ID)); 
+	 preparedStmt.setString(12, quntity); 
+	 preparedStmt.setInt(13, Integer.parseInt(ID)); 
 	 // execute the statement
 	 preparedStmt.execute(); 
 	 con.close(); 
-	 output = "Updated successfully"; 
+	 output = "Updated successfully";  
 	 } 
 	 catch (Exception e) 
 	 { 
